@@ -20,10 +20,10 @@ class Model:
         for i in reversed(range(len(self.layers))):
             layer = self.layers[i]
             if i == len(self.layers) - 1:  # Output layer
-                layer.calculate_deltas(targets=targets, loss=loss)
+                layer.calculate_gradients(targets=targets, loss=loss)
             else:  # Hidden layer
                 downstream_layer = self.layers[i + 1]
-                layer.calculate_deltas(downstream_layer=downstream_layer)
+                layer.calculate_gradients(downstream_layer=downstream_layer)
 
     def _update_weights(self, inputs: List[float], learning_rate: float, optimizer: Optimizer):
         for layer_index, layer in enumerate(self.layers):
