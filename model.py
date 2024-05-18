@@ -1,15 +1,22 @@
 from typing import List
-from activation import Activation
-from optimizer import Optimizer, BGD
+from layer import Layer, Dense
 from loss import Loss
-from layer import Layer
+from optimizer import Optimizer, BGD
 
 class Model:
-    def __init__(self, neurons_per_layer: List[int], activation: Activation):
-        self.layers = []
-        self.activation = activation
-        for i in range(1, len(neurons_per_layer)):
-            self.layers.append(Layer(neurons_per_layer[i], neurons_per_layer[i - 1], activation))
+    def __init__(self, layers: List[Layer]):
+        self.layers = layers
+        self._initialize_layers()
+
+    def _initialize_layers(self):
+        for i, layer in enumerate(self.layers):
+            if i == 0:
+                # Assume the input layer size is equal to the number of inputs
+                num_inputs = layer.num_neurons
+            else:
+                num_inputs = self.layers[i-1].num_neurons
+            if isinstance(layer, Dense):
+                layer.initialize(num_inputs)
 
     def _forward_propagate(self, inputs: List[float]) -> List[float]:
         for layer in self.layers:
@@ -30,8 +37,8 @@ class Model:
             layer.update_weights(inputs, learning_rate, optimizer, layer_index)
             inputs = [neuron.output for neuron in layer.neurons]
 
-    def train(self, all_samples_inputs: List[List[float]], all_samples_expected_outputs: List[List[float]], learning_rate: float, nb_iter: int, loss: Loss, optimizer: Optimizer):
-        for epoch in range(nb_iter):
+    def fit(self, all_samples_inputs: List[List[float]], all_samples_expected_outputs: List[List[float]], learning_rate: float, epochs: int, loss: Loss, optimizer: Optimizer):
+        for epoch in range(epochs):
             for k in range(len(all_samples_inputs)):
                 sample_inputs = all_samples_inputs[k]
                 sample_expected_outputs = all_samples_expected_outputs[k]

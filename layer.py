@@ -5,8 +5,23 @@ from loss import Loss
 from neuron import Neuron
 
 class Layer:
-    def __init__(self, num_neurons: int, num_inputs_per_neuron: int, activation: Activation):
-        self.neurons = [Neuron(num_inputs_per_neuron, activation) for _ in range(num_neurons)]
+    def activate(self, inputs: List[float]) -> List[float]:
+        raise NotImplementedError
+
+    def calculate_gradients(self, targets: List[float] = None, downstream_layer = None, loss: Loss = None):
+        raise NotImplementedError
+
+    def update_weights(self, inputs: List[float], learning_rate: float, optimizer: Optimizer, layer_index: int):
+        raise NotImplementedError
+
+class Dense(Layer):
+    def __init__(self, num_neurons: int, activation: Activation):
+        self.num_neurons = num_neurons
+        self.activation = activation
+        self.neurons = []
+
+    def initialize(self, num_inputs_per_neuron: int):
+        self.neurons = [Neuron(num_inputs_per_neuron, self.activation) for _ in range(self.num_neurons)]
 
     def activate(self, inputs: List[float]) -> List[float]:
         return [neuron.activate(inputs) for neuron in self.neurons]

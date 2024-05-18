@@ -1,7 +1,8 @@
 from model import Model
-from activation import Tanh, Sigmoid
-from loss import MSE, LogLoss
-from optimizer import SGD, BGD
+from layer import Dense
+from activation import *
+from loss import *
+from optimizer import *
 
 # XOR data
 X = [
@@ -20,14 +21,18 @@ Y = [
 
 # Creating Model with Sigmoid activation function
 activation = Tanh()
-model = Model([2, 3, 1], activation)
+model = Model([
+    Dense(2, activation),  # input layer with 2 neurons
+    Dense(3, activation),  # hidden layer with 3 neurons
+    Dense(1, activation)   # output layer with 1 neuron
+])
 
 # Define the loss function and optimizer
 loss = MSE()
 optimizer = SGD()
 
 # Training the model with logistic activation and log loss
-model.train(X, Y, 0.1, 10000, loss, optimizer)
+model.fit(X, Y, 0.1, 10000, loss, optimizer)
 
 # Making predictions
 predictions = [model.predict(X[k]) for k in range(len(X))]
