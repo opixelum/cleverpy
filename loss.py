@@ -32,4 +32,3 @@ class LogLoss(Loss):
         epsilon = 1e-15
         predicted = max(min(predicted, 1 - epsilon), epsilon)
         return (predicted - target) / (predicted * (1 - predicted))
-

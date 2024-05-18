@@ -25,7 +25,6 @@ class Logistic(Activation):  # Alias for sigmoid
 
     @staticmethod
     def derivative(x: float) -> float:
-        sigmoid = Logistic.activate(x)
-        return sigmoid * (1 - sigmoid)
+        return Logistic.activate(x) * (1 - Logistic.activate(x))
 
 Sigmoid = Logistic  # Alias
